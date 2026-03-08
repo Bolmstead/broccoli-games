@@ -1,0 +1,62 @@
+name: BroccoliPigeon
+options:
+  bundleIdPrefix: com.broccoli
+schemes:
+  BroccoliPigeon:
+    build:
+      targets:
+        BroccoliPigeon: all
+    test:
+      targets:
+        - name: BroccoliPigeonTests
+settings:
+  base:
+    SWIFT_VERSION: 5.0
+targets:
+  BroccoliPigeon:
+    type: application
+    platform: iOS
+    deploymentTarget: '17.0'
+    sources:
+      - path: App
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Broccoli Pigeon
+        UILaunchScreen: {}
+        UIApplicationSupportsIndirectInputEvents: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.broccoli.BroccoliPigeon
+        TARGETED_DEVICE_FAMILY: '1,2'
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_STYLE: Automatic
+    dependencies:
+      - target: BroccoliGamesMessagesExtension
+        embed: true
+  BroccoliGamesMessagesExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: '17.0'
+    sources:
+      - path: iMessageExtension
+    info:
+      path: iMessageExtension/Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.broccoli.BroccoliPigeon.MessagesExtension
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_STYLE: Automatic
+  BroccoliPigeonTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: '17.0'
+    hostApplication: BroccoliPigeon
+    sources:
+      - path: BroccoliPigeonTests
+      - path: iMessageExtension/ArcadeGameLogic.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.broccoli.BroccoliPigeonTests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic

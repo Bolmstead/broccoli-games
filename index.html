@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Broccoli Arcade</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=Chakra+Petch:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-grid"></div>
+
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">BROCCOLI GAMES</p>
+          <h1>Game Pigeon Clone</h1>
+        </div>
+        <p class="topbar-note">Local pass-and-play arcade</p>
+      </header>
+
+      <section class="content">
+        <aside class="game-list" id="gameList" aria-label="Game list"></aside>
+
+        <section class="game-panel">
+          <div class="game-header">
+            <div>
+              <h2 id="gameTitle"></h2>
+              <p id="gameDescription"></p>
+            </div>
+            <div id="gameControls" class="game-controls"></div>
+          </div>
+
+          <div id="statusBar" class="status-bar" aria-live="polite"></div>
+          <div id="gameContainer" class="game-container"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

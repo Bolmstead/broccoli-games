@@ -1,0 +1,562 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		08E06DC4F3A2EE6BDDB5038A /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF023654D85FB40468FC6EBE /* MessagesViewController.swift */; };
+		18B597E88881250DF0A3D492 /* BroccoliPigeonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74D0159FE77943E583271D9 /* BroccoliPigeonApp.swift */; };
+		2452992D093EB9D4532F31B5 /* ArcadeRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40B1032223560F18DD05013F /* ArcadeRootView.swift */; };
+		249D6A0DD13B038354D331F7 /* BroccoliGamesMessagesExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 49CDD7502624B483137D1AB4 /* BroccoliGamesMessagesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		27AC3710E58FE71714197E75 /* ArcadeGameLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A448019E626A5FB00F205E9E /* ArcadeGameLogicTests.swift */; };
+		336AD90B7FEA277051726C7F /* MessagesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E05095BA06C26BE82DFF559 /* MessagesCoordinator.swift */; };
+		56B56F6CA73814459ECF4F43 /* BoggleGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB477FA5B4361EECF2D0CDDD /* BoggleGameView.swift */; };
+		8AACCCFF3D5A17B0764DDEFA /* FlappyBirdGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2AA5FF78E9272C1961F9805 /* FlappyBirdGameView.swift */; };
+		8CA34C98CC7919E7C874A85D /* WordleGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF1454A91C65851DEDF33E /* WordleGameView.swift */; };
+		9A8411DEF8B32D8670D1CF73 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2383B44D5D289FB4A192CA0F /* ContentView.swift */; };
+		C611B1C71084630B3BF69703 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95ACD3ACD2518D21D2AD4CEE /* Color+Hex.swift */; };
+		E581941E269F0866FBB10A47 /* TicTacToeGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE469B6D6341AA78575193B /* TicTacToeGameView.swift */; };
+		EB74A3625BC5A2BB5454A57E /* ArcadeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A387633098E2856921192D82 /* ArcadeModels.swift */; };
+		F1D0845DEF3830544893D6EA /* Connect4GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F61D20E21D0683BA0DE9E76 /* Connect4GameView.swift */; };
+		F93AC018D6127327D8C5BB42 /* ArcadeGameLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B76CB1E4295DC0EBC7A0A2 /* ArcadeGameLogic.swift */; };
+		FDB6A9C92FB26064F119ACA2 /* ArcadeGameLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B76CB1E4295DC0EBC7A0A2 /* ArcadeGameLogic.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9ADDC4890B010D6D80DBAFC1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4BEFA5E570C3A189C2EA9E63 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 407287D55ED1ABC5E20A0F12;
+			remoteInfo = BroccoliGamesMessagesExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		27D3847065A9FF11B01E3646 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				249D6A0DD13B038354D331F7 /* BroccoliGamesMessagesExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		07DF1454A91C65851DEDF33E /* WordleGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordleGameView.swift; sourceTree = "<group>"; };
+		0E05095BA06C26BE82DFF559 /* MessagesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesCoordinator.swift; sourceTree = "<group>"; };
+		0EE469B6D6341AA78575193B /* TicTacToeGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicTacToeGameView.swift; sourceTree = "<group>"; };
+		2383B44D5D289FB4A192CA0F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		25BB97C08FD6249EEFA59A14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		267B1E41CF84512A907D6BD0 /* BroccoliPigeon.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BroccoliPigeon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		40B1032223560F18DD05013F /* ArcadeRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcadeRootView.swift; sourceTree = "<group>"; };
+		49CDD7502624B483137D1AB4 /* BroccoliGamesMessagesExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BroccoliGamesMessagesExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F61D20E21D0683BA0DE9E76 /* Connect4GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connect4GameView.swift; sourceTree = "<group>"; };
+		95ACD3ACD2518D21D2AD4CEE /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
+		A387633098E2856921192D82 /* ArcadeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcadeModels.swift; sourceTree = "<group>"; };
+		A448019E626A5FB00F205E9E /* ArcadeGameLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcadeGameLogicTests.swift; sourceTree = "<group>"; };
+		C4B76CB1E4295DC0EBC7A0A2 /* ArcadeGameLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcadeGameLogic.swift; sourceTree = "<group>"; };
+		CB477FA5B4361EECF2D0CDDD /* BoggleGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoggleGameView.swift; sourceTree = "<group>"; };
+		D08DF53B5CEA7EBEA89EC817 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D2AA5FF78E9272C1961F9805 /* FlappyBirdGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlappyBirdGameView.swift; sourceTree = "<group>"; };
+		D73F059387D1AC1E3AA0A177 /* BroccoliPigeonTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BroccoliPigeonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E74D0159FE77943E583271D9 /* BroccoliPigeonApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroccoliPigeonApp.swift; sourceTree = "<group>"; };
+		FF023654D85FB40468FC6EBE /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		13823EA678B2B1D3F5A3F755 /* Games */ = {
+			isa = PBXGroup;
+			children = (
+				CB477FA5B4361EECF2D0CDDD /* BoggleGameView.swift */,
+				8F61D20E21D0683BA0DE9E76 /* Connect4GameView.swift */,
+				D2AA5FF78E9272C1961F9805 /* FlappyBirdGameView.swift */,
+				0EE469B6D6341AA78575193B /* TicTacToeGameView.swift */,
+				07DF1454A91C65851DEDF33E /* WordleGameView.swift */,
+			);
+			path = Games;
+			sourceTree = "<group>";
+		};
+		2EB46A905421838BAD88EAA5 /* iMessageExtension */ = {
+			isa = PBXGroup;
+			children = (
+				C4B76CB1E4295DC0EBC7A0A2 /* ArcadeGameLogic.swift */,
+				A387633098E2856921192D82 /* ArcadeModels.swift */,
+				40B1032223560F18DD05013F /* ArcadeRootView.swift */,
+				D08DF53B5CEA7EBEA89EC817 /* Info.plist */,
+				0E05095BA06C26BE82DFF559 /* MessagesCoordinator.swift */,
+				FF023654D85FB40468FC6EBE /* MessagesViewController.swift */,
+				13823EA678B2B1D3F5A3F755 /* Games */,
+				C32F93CCF0913B131F83420E /* UI */,
+			);
+			path = iMessageExtension;
+			sourceTree = "<group>";
+		};
+		538ECAABD5DB64420AAC722C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				49CDD7502624B483137D1AB4 /* BroccoliGamesMessagesExtension.appex */,
+				267B1E41CF84512A907D6BD0 /* BroccoliPigeon.app */,
+				D73F059387D1AC1E3AA0A177 /* BroccoliPigeonTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		76BFA1FB3B76815B84C6746A = {
+			isa = PBXGroup;
+			children = (
+				C2410E9A79A7AA7CB6253D1A /* App */,
+				B13AFE6C72CCA220D38FF13B /* BroccoliPigeonTests */,
+				2EB46A905421838BAD88EAA5 /* iMessageExtension */,
+				538ECAABD5DB64420AAC722C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B13AFE6C72CCA220D38FF13B /* BroccoliPigeonTests */ = {
+			isa = PBXGroup;
+			children = (
+				A448019E626A5FB00F205E9E /* ArcadeGameLogicTests.swift */,
+			);
+			path = BroccoliPigeonTests;
+			sourceTree = "<group>";
+		};
+		C2410E9A79A7AA7CB6253D1A /* App */ = {
+			isa = PBXGroup;
+			children = (
+				E74D0159FE77943E583271D9 /* BroccoliPigeonApp.swift */,
+				2383B44D5D289FB4A192CA0F /* ContentView.swift */,
+				25BB97C08FD6249EEFA59A14 /* Info.plist */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		C32F93CCF0913B131F83420E /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				95ACD3ACD2518D21D2AD4CEE /* Color+Hex.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2B6AB6690EE884A3AFABDE42 /* BroccoliPigeon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DF43E69B867D4210F4D4B21 /* Build configuration list for PBXNativeTarget "BroccoliPigeon" */;
+			buildPhases = (
+				080D08AEA1AC72831472C01B /* Sources */,
+				27D3847065A9FF11B01E3646 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C573B93DA68187D8DA554006 /* PBXTargetDependency */,
+			);
+			name = BroccoliPigeon;
+			packageProductDependencies = (
+			);
+			productName = BroccoliPigeon;
+			productReference = 267B1E41CF84512A907D6BD0 /* BroccoliPigeon.app */;
+			productType = "com.apple.product-type.application";
+		};
+		407287D55ED1ABC5E20A0F12 /* BroccoliGamesMessagesExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2AB68CC78E53283ED45CF3FB /* Build configuration list for PBXNativeTarget "BroccoliGamesMessagesExtension" */;
+			buildPhases = (
+				A81171BF32AAAEA81A539CE3 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BroccoliGamesMessagesExtension;
+			packageProductDependencies = (
+			);
+			productName = BroccoliGamesMessagesExtension;
+			productReference = 49CDD7502624B483137D1AB4 /* BroccoliGamesMessagesExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		CCE049EC9CF459F4F6041D60 /* BroccoliPigeonTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7DC502087790106DAE1AEC99 /* Build configuration list for PBXNativeTarget "BroccoliPigeonTests" */;
+			buildPhases = (
+				0E32C542836F78AF31AD9AD8 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BroccoliPigeonTests;
+			packageProductDependencies = (
+			);
+			productName = BroccoliPigeonTests;
+			productReference = D73F059387D1AC1E3AA0A177 /* BroccoliPigeonTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4BEFA5E570C3A189C2EA9E63 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					2B6AB6690EE884A3AFABDE42 = {
+						ProvisioningStyle = Automatic;
+					};
+					407287D55ED1ABC5E20A0F12 = {
+						ProvisioningStyle = Automatic;
+					};
+					CCE049EC9CF459F4F6041D60 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = DE7F3DC1B2155955CD3B8628 /* Build configuration list for PBXProject "BroccoliPigeon" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 76BFA1FB3B76815B84C6746A;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				407287D55ED1ABC5E20A0F12 /* BroccoliGamesMessagesExtension */,
+				2B6AB6690EE884A3AFABDE42 /* BroccoliPigeon */,
+				CCE049EC9CF459F4F6041D60 /* BroccoliPigeonTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		080D08AEA1AC72831472C01B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18B597E88881250DF0A3D492 /* BroccoliPigeonApp.swift in Sources */,
+				9A8411DEF8B32D8670D1CF73 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0E32C542836F78AF31AD9AD8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F93AC018D6127327D8C5BB42 /* ArcadeGameLogic.swift in Sources */,
+				27AC3710E58FE71714197E75 /* ArcadeGameLogicTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A81171BF32AAAEA81A539CE3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FDB6A9C92FB26064F119ACA2 /* ArcadeGameLogic.swift in Sources */,
+				EB74A3625BC5A2BB5454A57E /* ArcadeModels.swift in Sources */,
+				2452992D093EB9D4532F31B5 /* ArcadeRootView.swift in Sources */,
+				56B56F6CA73814459ECF4F43 /* BoggleGameView.swift in Sources */,
+				C611B1C71084630B3BF69703 /* Color+Hex.swift in Sources */,
+				F1D0845DEF3830544893D6EA /* Connect4GameView.swift in Sources */,
+				8AACCCFF3D5A17B0764DDEFA /* FlappyBirdGameView.swift in Sources */,
+				336AD90B7FEA277051726C7F /* MessagesCoordinator.swift in Sources */,
+				08E06DC4F3A2EE6BDDB5038A /* MessagesViewController.swift in Sources */,
+				E581941E269F0866FBB10A47 /* TicTacToeGameView.swift in Sources */,
+				8CA34C98CC7919E7C874A85D /* WordleGameView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C573B93DA68187D8DA554006 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 407287D55ED1ABC5E20A0F12 /* BroccoliGamesMessagesExtension */;
+			targetProxy = 9ADDC4890B010D6D80DBAFC1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0CA6A1169D946F99213387E2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = iMessageExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.broccoli.BroccoliPigeon.MessagesExtension;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		323D1C3ED402F3AF1D13ED06 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.broccoli.BroccoliPigeonTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		582880ECF362040B68527358 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.broccoli.BroccoliPigeon;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		64B5EB54ABC4AC42AF5840A4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		6683A8A389CD5F526A3B2F99 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.broccoli.BroccoliPigeonTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9897EE24C11BA94EDE1906C5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.broccoli.BroccoliPigeon;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9AF48B3628E828EE7AFF52E2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		9D8C34709106436F6E429390 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = iMessageExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.broccoli.BroccoliPigeon.MessagesExtension;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DF43E69B867D4210F4D4B21 /* Build configuration list for PBXNativeTarget "BroccoliPigeon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9897EE24C11BA94EDE1906C5 /* Debug */,
+				582880ECF362040B68527358 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2AB68CC78E53283ED45CF3FB /* Build configuration list for PBXNativeTarget "BroccoliGamesMessagesExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0CA6A1169D946F99213387E2 /* Debug */,
+				9D8C34709106436F6E429390 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7DC502087790106DAE1AEC99 /* Build configuration list for PBXNativeTarget "BroccoliPigeonTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				323D1C3ED402F3AF1D13ED06 /* Debug */,
+				6683A8A389CD5F526A3B2F99 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DE7F3DC1B2155955CD3B8628 /* Build configuration list for PBXProject "BroccoliPigeon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9AF48B3628E828EE7AFF52E2 /* Debug */,
+				64B5EB54ABC4AC42AF5840A4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4BEFA5E570C3A189C2EA9E63 /* Project object */;
+}
