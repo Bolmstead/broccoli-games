@@ -12,10 +12,13 @@ final class MessagesCoordinator: ObservableObject {
 
     private weak var conversation: MSConversation?
     private let defaults: UserDefaults
+    private let fallbackPlayerID: String
 
     private enum DefaultsKey {
         static let lastPlayedGame = "arcade.lastPlayedGame"
         static let localFlappyBest = "arcade.localFlappyBest"
+        static let fallbackPlayerID = "arcade.fallbackPlayerID"
+        static let pictionaryPromptPrefix = "arcade.pictionary.prompt."
     }
 
     private enum SendPolicy {
@@ -26,6 +29,14 @@ final class MessagesCoordinator: ObservableObject {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+
+        if let existing = defaults.string(forKey: DefaultsKey.fallbackPlayerID), !existing.isEmpty {
+            self.fallbackPlayerID = existing
+        } else {
+            let generated = UUID().uuidString.lowercased()
+            defaults.set(generated, forKey: DefaultsKey.fallbackPlayerID)
+            self.fallbackPlayerID = generated
+        }
 
         if let raw = defaults.string(forKey: DefaultsKey.lastPlayedGame),
            let game = ArcadeGame(rawValue: raw) {
@@ -39,6 +50,18 @@ final class MessagesCoordinator: ObservableObject {
 
     func setConversation(_ conversation: MSConversation?) {
         self.conversation = conversation
+    }
+
+    func currentPlayerID() -> String {
+        conversation?.localParticipantIdentifier.uuidString.lowercased() ?? fallbackPlayerID
+    }
+
+    func isLocalPlayerDrawer(for state: PictionaryState) -> Bool {
+        !state.drawerID.isEmpty && state.drawerID == currentPlayerID()
+    }
+
+    func localPictionaryPrompt(for sessionID: String) -> String? {
+        defaults.string(forKey: pictionaryPromptKey(sessionID: sessionID))
     }
 
     func ingest(message: MSMessage?) {
@@ -69,9 +92,12 @@ final class MessagesCoordinator: ObservableObject {
         fresh = normalize(fresh)
 
         envelope = fresh
-        statusText = "New \(game.title) round."
+        statusText = game == .pictionary ? "Draw and send a puzzle to the group." : "New \(game.title) round."
         persistLastPlayedGame(game)
         updateTurnHintAfterLocalSend(for: game)
+        if game == .pictionary {
+            return
+        }
         sendCurrent(summary: statusText)
     }
 
@@ -90,8 +116,11 @@ final class MessagesCoordinator: ObservableObject {
         fresh = normalize(fresh)
 
         envelope = fresh
-        statusText = "Round reset for \(current.game.title)."
+        statusText = current.game == .pictionary ? "Start a new drawing and send when ready." : "Round reset for \(current.game.title)."
         updateTurnHintAfterLocalSend(for: current.game)
+        if current.game == .pictionary {
+            return
+        }
         sendCurrent(summary: statusText)
     }
 
@@ -298,6 +327,110 @@ final class MessagesCoordinator: ObservableObject {
         commit(envelope: e, summary: statusText)
     }
 
+    func publishPictionaryRound(prompt rawPrompt: String, strokes rawStrokes: [PictionaryStroke], drawingDurationMs: Int) {
+        guard var e = envelope, e.game == .pictionary else { return }
+
+        let prompt = normalizePictionaryGuess(rawPrompt)
+        guard prompt.count >= 2 else {
+            statusText = "Use a prompt with at least 2 letters."
+            return
+        }
+
+        let strokes = sanitizePictionaryStrokes(rawStrokes)
+        guard !strokes.isEmpty else {
+            statusText = "Draw something before sending."
+            return
+        }
+
+        let duration = max(drawingDurationMs, 800)
+        let salt = UUID().uuidString.replacingOccurrences(of: "-", with: "").lowercased()
+        let promptHash = pictionaryPromptHash(prompt: prompt, salt: salt)
+
+        var state = e.pictionary ?? PictionaryState.newRound(drawerID: currentPlayerID())
+        state.phase = .guessing
+        state.drawerID = currentPlayerID()
+        state.promptSalt = salt
+        state.promptHash = promptHash
+        state.promptLength = prompt.count
+        state.promptFirstLetter = String(prompt.prefix(1)).uppercased()
+        state.strokes = strokes
+        state.drawingDurationMs = duration
+        state.totalGuessAttempts = 0
+        state.correctResults = []
+        state.lastGuessPreview = "Puzzle sent."
+        state.publishedAt = Date().timeIntervalSince1970
+
+        e.pictionary = state
+        persistPictionaryPrompt(prompt, sessionID: e.sessionID)
+        statusText = "Pictionary sent: \(state.promptLength)-letter word."
+        commit(envelope: e, summary: statusText)
+    }
+
+    func submitPictionaryGuess(_ rawGuess: String, elapsedSeconds: TimeInterval) {
+        guard var e = envelope, e.game == .pictionary, var state = e.pictionary else { return }
+        guard state.phase == .guessing else {
+            statusText = "The puzzle has not been sent yet."
+            return
+        }
+
+        let playerID = currentPlayerID()
+        guard state.drawerID != playerID else {
+            statusText = "Drawer cannot submit guesses."
+            return
+        }
+
+        let guess = normalizePictionaryGuess(rawGuess)
+        guard !guess.isEmpty else {
+            statusText = "Type a guess first."
+            return
+        }
+
+        state.totalGuessAttempts += 1
+        let hashed = pictionaryPromptHash(prompt: guess, salt: state.promptSalt)
+
+        if hashed == state.promptHash {
+            let elapsedMs = max(Int((elapsedSeconds * 1000).rounded()), 0)
+            if let idx = state.correctResults.firstIndex(where: { $0.playerID == playerID }) {
+                state.correctResults[idx].elapsedMs = min(state.correctResults[idx].elapsedMs, elapsedMs)
+                state.correctResults[idx].guessedAt = Date().timeIntervalSince1970
+                state.correctResults[idx].guess = guess
+            } else {
+                state.correctResults.append(
+                    PictionaryResult(
+                        playerID: playerID,
+                        elapsedMs: elapsedMs,
+                        guessedAt: Date().timeIntervalSince1970,
+                        guess: guess
+                    )
+                )
+            }
+
+            state.correctResults.sort { lhs, rhs in
+                if lhs.elapsedMs == rhs.elapsedMs {
+                    return lhs.guessedAt < rhs.guessedAt
+                }
+                return lhs.elapsedMs < rhs.elapsedMs
+            }
+
+            let leader = state.correctResults.first
+            let solved = formatMilliseconds(elapsedMs)
+            if leader?.playerID == playerID {
+                statusText = "\(playerLabel(playerID)) solved in \(solved) and is leading."
+            } else if let leader {
+                statusText = "\(playerLabel(playerID)) solved in \(solved). Leader: \(formatMilliseconds(leader.elapsedMs))."
+            } else {
+                statusText = "\(playerLabel(playerID)) solved in \(solved)."
+            }
+            state.lastGuessPreview = "\(playerLabel(playerID)) solved in \(solved)."
+        } else {
+            statusText = "\(playerLabel(playerID)) guessed \(guess.uppercased()): incorrect."
+            state.lastGuessPreview = statusText
+        }
+
+        e.pictionary = state
+        commit(envelope: e, summary: statusText)
+    }
+
     func boggleRemainingSeconds(state: BoggleState, now: Date = Date()) -> Int {
         let elapsed = Int(now.timeIntervalSince1970 - state.roundStartedAt)
         return max(state.roundLength - elapsed, 0)
@@ -369,7 +502,9 @@ final class MessagesCoordinator: ObservableObject {
 
             if let error {
                 if retriesRemaining > 0 {
-                    self.insert(message: message, into: conversation, retriesRemaining: retriesRemaining - 1)
+                    Task { @MainActor in
+                        self.insert(message: message, into: conversation, retriesRemaining: retriesRemaining - 1)
+                    }
                     return
                 }
 
@@ -402,6 +537,18 @@ final class MessagesCoordinator: ObservableObject {
             normalized.boggle = normalized.boggle ?? .newRound()
         case .connect4:
             normalized.connect4 = normalized.connect4 ?? .newRound()
+        case .pictionary:
+            var state = normalized.pictionary ?? .newRound(drawerID: currentPlayerID())
+            if state.drawerID.isEmpty {
+                state.drawerID = currentPlayerID()
+            }
+            state.correctResults.sort { lhs, rhs in
+                if lhs.elapsedMs == rhs.elapsedMs {
+                    return lhs.guessedAt < rhs.guessedAt
+                }
+                return lhs.elapsedMs < rhs.elapsedMs
+            }
+            normalized.pictionary = state
         }
 
         return normalized
@@ -420,7 +567,7 @@ final class MessagesCoordinator: ObservableObject {
         switch game {
         case .ticTacToe, .connect4:
             return true
-        case .wordle, .flappyBird, .boggle:
+        case .wordle, .flappyBird, .boggle, .pictionary:
             return false
         }
     }
@@ -457,5 +604,40 @@ final class MessagesCoordinator: ObservableObject {
     private func persistLocalFlappyBest(_ best: Int) {
         defaults.set(best, forKey: DefaultsKey.localFlappyBest)
         localFlappyBest = best
+    }
+
+    private func sanitizePictionaryStrokes(_ strokes: [PictionaryStroke]) -> [PictionaryStroke] {
+        let maxStrokes = 20
+        let maxPoints = 220
+        var remaining = maxPoints
+        var cleaned: [PictionaryStroke] = []
+
+        for stroke in strokes.prefix(maxStrokes) {
+            guard remaining > 0 else { break }
+            let points = stroke.points.prefix(remaining)
+            guard !points.isEmpty else { continue }
+            cleaned.append(PictionaryStroke(points: Array(points)))
+            remaining -= points.count
+        }
+
+        return cleaned
+    }
+
+    private func formatMilliseconds(_ value: Int) -> String {
+        let ms = max(value, 0)
+        return String(format: "%.2fs", Double(ms) / 1000.0)
+    }
+
+    private func playerLabel(_ playerID: String) -> String {
+        let short = String(playerID.suffix(4)).uppercased()
+        return "Player \(short)"
+    }
+
+    private func persistPictionaryPrompt(_ prompt: String, sessionID: String) {
+        defaults.set(prompt, forKey: pictionaryPromptKey(sessionID: sessionID))
+    }
+
+    private func pictionaryPromptKey(sessionID: String) -> String {
+        "\(DefaultsKey.pictionaryPromptPrefix)\(sessionID)"
     }
 }

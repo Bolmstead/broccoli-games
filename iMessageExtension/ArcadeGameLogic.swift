@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 
 func winnerForTicTacToe(board: [Int]) -> Int? {
     guard board.count == 9 else { return nil }
@@ -161,4 +162,19 @@ func canTraceBoggleWord(_ word: String, board: [String]) -> Bool {
     }
 
     return false
+}
+
+func normalizePictionaryGuess(_ raw: String) -> String {
+    let trimmed = raw
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+        .lowercased()
+    let parts = trimmed.split(whereSeparator: { $0.isWhitespace })
+    return parts.joined(separator: " ")
+}
+
+func pictionaryPromptHash(prompt: String, salt: String) -> String {
+    let normalized = normalizePictionaryGuess(prompt)
+    let input = "\(salt)|\(normalized)"
+    let digest = SHA256.hash(data: Data(input.utf8))
+    return digest.map { String(format: "%02x", $0) }.joined()
 }

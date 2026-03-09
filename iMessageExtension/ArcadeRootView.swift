@@ -207,6 +207,24 @@ struct ArcadeRootView: View {
                     Connect4GameView(state: envelope.connect4 ?? .newRound()) { column in
                         coordinator.dropConnect4(column: column)
                     }
+                case .pictionary:
+                    let state = envelope.pictionary ?? .newRound(drawerID: coordinator.currentPlayerID())
+                    PictionaryGameView(
+                        state: state,
+                        isDrawer: coordinator.isLocalPlayerDrawer(for: state),
+                        localPlayerID: coordinator.currentPlayerID(),
+                        revealedPrompt: coordinator.localPictionaryPrompt(for: envelope.sessionID),
+                        publishRound: { prompt, strokes, durationMs in
+                            coordinator.publishPictionaryRound(
+                                prompt: prompt,
+                                strokes: strokes,
+                                drawingDurationMs: durationMs
+                            )
+                        },
+                        submitGuess: { guess, elapsedSeconds in
+                            coordinator.submitPictionaryGuess(guess, elapsedSeconds: elapsedSeconds)
+                        }
+                    )
                 }
             }
             .padding(10)
@@ -227,6 +245,8 @@ struct ArcadeRootView: View {
             return "Find words of 3+ letters before time runs out. Q tiles count as QU."
         case .connect4:
             return "Drop chips into columns and connect 4 in any direction. Send each move in chat."
+        case .pictionary:
+            return "Drawer sketches and sends. Everyone watches replay, guesses in chat, and fastest correct time leads."
         }
     }
 }

@@ -6,6 +6,7 @@ enum ArcadeGame: String, CaseIterable, Codable, Identifiable {
     case flappyBird
     case boggle
     case connect4
+    case pictionary
 
     var id: String { rawValue }
 
@@ -16,6 +17,7 @@ enum ArcadeGame: String, CaseIterable, Codable, Identifiable {
         case .flappyBird: return "Flappy Bird"
         case .boggle: return "Boggle"
         case .connect4: return "Connect 4"
+        case .pictionary: return "Pictionary"
         }
     }
 
@@ -26,6 +28,7 @@ enum ArcadeGame: String, CaseIterable, Codable, Identifiable {
         case .flappyBird: return "Tap to survive"
         case .boggle: return "Find words fast"
         case .connect4: return "Connect four chips"
+        case .pictionary: return "Draw, replay, and guess"
         }
     }
 
@@ -36,12 +39,13 @@ enum ArcadeGame: String, CaseIterable, Codable, Identifiable {
         case .flappyBird: return "#38BDF8"
         case .boggle: return "#8B5CF6"
         case .connect4: return "#EF4444"
+        case .pictionary: return "#0EA5E9"
         }
     }
 }
 
 struct ArcadeEnvelope: Codable {
-    static let currentSchemaVersion = 2
+    static let currentSchemaVersion = 3
 
     var schemaVersion: Int
     var game: ArcadeGame
@@ -53,6 +57,7 @@ struct ArcadeEnvelope: Codable {
     var flappyBird: FlappyBirdState?
     var boggle: BoggleState?
     var connect4: Connect4State?
+    var pictionary: PictionaryState?
 
     enum CodingKeys: String, CodingKey {
         case schemaVersion
@@ -65,6 +70,7 @@ struct ArcadeEnvelope: Codable {
         case flappyBird
         case boggle
         case connect4
+        case pictionary
     }
 
     init(
@@ -77,7 +83,8 @@ struct ArcadeEnvelope: Codable {
         wordle: WordleState?,
         flappyBird: FlappyBirdState?,
         boggle: BoggleState?,
-        connect4: Connect4State?
+        connect4: Connect4State?,
+        pictionary: PictionaryState?
     ) {
         self.schemaVersion = schemaVersion
         self.game = game
@@ -89,6 +96,7 @@ struct ArcadeEnvelope: Codable {
         self.flappyBird = flappyBird
         self.boggle = boggle
         self.connect4 = connect4
+        self.pictionary = pictionary
     }
 
     init(from decoder: Decoder) throws {
@@ -103,6 +111,7 @@ struct ArcadeEnvelope: Codable {
         flappyBird = try container.decodeIfPresent(FlappyBirdState.self, forKey: .flappyBird)
         boggle = try container.decodeIfPresent(BoggleState.self, forKey: .boggle)
         connect4 = try container.decodeIfPresent(Connect4State.self, forKey: .connect4)
+        pictionary = try container.decodeIfPresent(PictionaryState.self, forKey: .pictionary)
     }
 
     static func fresh(game: ArcadeGame) -> ArcadeEnvelope {
@@ -116,7 +125,8 @@ struct ArcadeEnvelope: Codable {
             wordle: nil,
             flappyBird: nil,
             boggle: nil,
-            connect4: nil
+            connect4: nil,
+            pictionary: nil
         )
 
         switch game {
@@ -130,6 +140,8 @@ struct ArcadeEnvelope: Codable {
             envelope.boggle = BoggleState.newRound()
         case .connect4:
             envelope.connect4 = Connect4State.newRound()
+        case .pictionary:
+            envelope.pictionary = PictionaryState.newRound()
         }
 
         return envelope
@@ -147,6 +159,7 @@ struct ArcadeEnvelope: Codable {
         try container.encodeIfPresent(flappyBird, forKey: .flappyBird)
         try container.encodeIfPresent(boggle, forKey: .boggle)
         try container.encodeIfPresent(connect4, forKey: .connect4)
+        try container.encodeIfPresent(pictionary, forKey: .pictionary)
     }
 }
 
@@ -215,6 +228,62 @@ struct Connect4State: Codable {
 
     static func newRound() -> Connect4State {
         Connect4State(board: Array(repeating: 0, count: 42), currentPlayer: 1, winner: nil, isDraw: false)
+    }
+}
+
+enum PictionaryPhase: String, Codable {
+    case setup
+    case guessing
+}
+
+struct PictionaryStrokePoint: Codable, Hashable {
+    var x: Int
+    var y: Int
+    var t: Int
+}
+
+struct PictionaryStroke: Codable, Hashable {
+    var points: [PictionaryStrokePoint]
+}
+
+struct PictionaryResult: Codable, Hashable, Identifiable {
+    var playerID: String
+    var elapsedMs: Int
+    var guessedAt: TimeInterval
+    var guess: String
+
+    var id: String { playerID }
+}
+
+struct PictionaryState: Codable {
+    var phase: PictionaryPhase
+    var drawerID: String
+    var promptHash: String
+    var promptSalt: String
+    var promptLength: Int
+    var promptFirstLetter: String
+    var strokes: [PictionaryStroke]
+    var drawingDurationMs: Int
+    var totalGuessAttempts: Int
+    var correctResults: [PictionaryResult]
+    var lastGuessPreview: String
+    var publishedAt: TimeInterval
+
+    static func newRound(drawerID: String = "") -> PictionaryState {
+        PictionaryState(
+            phase: .setup,
+            drawerID: drawerID,
+            promptHash: "",
+            promptSalt: "",
+            promptLength: 0,
+            promptFirstLetter: "",
+            strokes: [],
+            drawingDurationMs: 0,
+            totalGuessAttempts: 0,
+            correctResults: [],
+            lastGuessPreview: "",
+            publishedAt: 0
+        )
     }
 }
 

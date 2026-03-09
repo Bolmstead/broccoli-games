@@ -59,4 +59,16 @@ final class ArcadeGameLogicTests: XCTestCase {
         XCTAssertTrue(canTraceBoggleWord("quit", board: board))
         XCTAssertFalse(canTraceBoggleWord("qat", board: board))
     }
+
+    func testPictionaryGuessNormalizationCollapsesWhitespace() {
+        XCTAssertEqual(normalizePictionaryGuess("  New   York  "), "new york")
+        XCTAssertEqual(normalizePictionaryGuess("DOG"), "dog")
+    }
+
+    func testPictionaryHashMatchesEquivalentWhitespace() {
+        let salt = "abc123"
+        let first = pictionaryPromptHash(prompt: "new york", salt: salt)
+        let second = pictionaryPromptHash(prompt: "  new   york ", salt: salt)
+        XCTAssertEqual(first, second)
+    }
 }

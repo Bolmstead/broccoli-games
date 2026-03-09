@@ -20,6 +20,7 @@
 		C611B1C71084630B3BF69703 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95ACD3ACD2518D21D2AD4CEE /* Color+Hex.swift */; };
 		E581941E269F0866FBB10A47 /* TicTacToeGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE469B6D6341AA78575193B /* TicTacToeGameView.swift */; };
 		EB74A3625BC5A2BB5454A57E /* ArcadeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A387633098E2856921192D82 /* ArcadeModels.swift */; };
+		EDB4063F062C477F82263171 /* PictionaryGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E7D7E2AB5FD15CA4DC7C7 /* PictionaryGameView.swift */; };
 		F1D0845DEF3830544893D6EA /* Connect4GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F61D20E21D0683BA0DE9E76 /* Connect4GameView.swift */; };
 		F93AC018D6127327D8C5BB42 /* ArcadeGameLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B76CB1E4295DC0EBC7A0A2 /* ArcadeGameLogic.swift */; };
 		FDB6A9C92FB26064F119ACA2 /* ArcadeGameLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B76CB1E4295DC0EBC7A0A2 /* ArcadeGameLogic.swift */; };
@@ -67,6 +68,7 @@
 		D08DF53B5CEA7EBEA89EC817 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D2AA5FF78E9272C1961F9805 /* FlappyBirdGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlappyBirdGameView.swift; sourceTree = "<group>"; };
 		D73F059387D1AC1E3AA0A177 /* BroccoliPigeonTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BroccoliPigeonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E28E7D7E2AB5FD15CA4DC7C7 /* PictionaryGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictionaryGameView.swift; sourceTree = "<group>"; };
 		E74D0159FE77943E583271D9 /* BroccoliPigeonApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BroccoliPigeonApp.swift; sourceTree = "<group>"; };
 		FF023654D85FB40468FC6EBE /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -78,6 +80,7 @@
 				CB477FA5B4361EECF2D0CDDD /* BoggleGameView.swift */,
 				8F61D20E21D0683BA0DE9E76 /* Connect4GameView.swift */,
 				D2AA5FF78E9272C1961F9805 /* FlappyBirdGameView.swift */,
+				E28E7D7E2AB5FD15CA4DC7C7 /* PictionaryGameView.swift */,
 				0EE469B6D6341AA78575193B /* TicTacToeGameView.swift */,
 				07DF1454A91C65851DEDF33E /* WordleGameView.swift */,
 			);
@@ -274,6 +277,7 @@
 				8AACCCFF3D5A17B0764DDEFA /* FlappyBirdGameView.swift in Sources */,
 				336AD90B7FEA277051726C7F /* MessagesCoordinator.swift in Sources */,
 				08E06DC4F3A2EE6BDDB5038A /* MessagesViewController.swift in Sources */,
+				EDB4063F062C477F82263171 /* PictionaryGameView.swift in Sources */,
 				E581941E269F0866FBB10A47 /* TicTacToeGameView.swift in Sources */,
 				8CA34C98CC7919E7C874A85D /* WordleGameView.swift in Sources */,
 			);
