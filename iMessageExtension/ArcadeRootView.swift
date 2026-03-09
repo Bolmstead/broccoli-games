@@ -5,143 +5,150 @@ struct ArcadeRootView: View {
     @ObservedObject var coordinator: MessagesCoordinator
     @AppStorage("arcade.showTips") private var showTips = true
 
+    private let lobbyColumns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 4)
+
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [Color(hex: "#081B44"), Color(hex: "#174172")],
+                colors: [Color(hex: "#090A0F"), Color(hex: "#171A23")],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
 
-            VStack(spacing: 12) {
-                header
-
-                if let envelope = coordinator.envelope {
+            if let envelope = coordinator.envelope {
+                VStack(spacing: 10) {
+                    activeHeader
                     gameScreen(for: envelope)
-                } else {
-                    lobby
                 }
+                .padding(10)
+            } else {
+                compactLobby
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 10)
             }
-            .padding(12)
         }
     }
 
-    private var header: some View {
+    private var compactLobby: some View {
+        VStack(spacing: 10) {
+            HStack(spacing: 10) {
+                Circle()
+                    .fill(LinearGradient(colors: [Color(hex: "#16A34A"), Color(hex: "#84CC16")], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 34, height: 34)
+                    .overlay(Text("🥦").font(.system(size: 18)))
+
+                Text("Games")
+                    .font(.title2.weight(.black))
+                    .foregroundStyle(.white)
+
+                Divider()
+                    .frame(height: 20)
+                    .overlay(Color.white.opacity(0.28))
+
+                Text("Settings")
+                    .font(.title3.weight(.medium))
+                    .foregroundStyle(.white.opacity(0.85))
+
+                Divider()
+                    .frame(height: 20)
+                    .overlay(Color.white.opacity(0.28))
+
+                Text("Store")
+                    .font(.title3.weight(.medium))
+                    .foregroundStyle(.white.opacity(0.85))
+
+                Spacer()
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 14))
+
+            if let errorText = coordinator.errorText {
+                Text(errorText)
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.red.opacity(0.95))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            ScrollView {
+                LazyVGrid(columns: lobbyColumns, spacing: 10) {
+                    ForEach(ArcadeGame.allCases) { game in
+                        Button {
+                            coordinator.startGame(game)
+                        } label: {
+                            VStack(spacing: 6) {
+                                ZStack(alignment: .topTrailing) {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(LinearGradient(
+                                            colors: [Color(hex: game.accentHex).opacity(0.95), Color(hex: game.accentHex).opacity(0.6)],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ))
+                                        .frame(height: 62)
+                                        .overlay(
+                                            Image(systemName: iconName(for: game))
+                                                .font(.system(size: 25, weight: .black))
+                                                .foregroundStyle(.white)
+                                        )
+
+                                    Image(systemName: "crown.fill")
+                                        .font(.system(size: 10, weight: .heavy))
+                                        .foregroundStyle(Color(hex: "#FACC15"))
+                                        .padding(5)
+                                }
+
+                                Text(compactTitle(for: game))
+                                    .font(.system(size: 11, weight: .black, design: .rounded))
+                                    .foregroundStyle(.white)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.7)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Start \(game.title)")
+                    }
+                }
+                .padding(.top, 2)
+            }
+        }
+    }
+
+    private var activeHeader: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("BROCCOLI GAMES")
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(.white.opacity(0.75))
-                        .accessibilityHidden(true)
-                    Text("iMessage Arcade")
-                        .font(.title2.weight(.heavy))
-                        .foregroundStyle(.white)
-                }
+                Text("Broccoli Games")
+                    .font(.headline.weight(.heavy))
+                    .foregroundStyle(.white)
                 Spacer()
-                if coordinator.envelope != nil {
-                    Button("Lobby") {
-                        coordinator.returnToLobby()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.white.opacity(0.22))
-                    .accessibilityHint("Return to game list")
+                Button("Lobby") {
+                    coordinator.returnToLobby()
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(.white.opacity(0.22))
             }
 
             Text(coordinator.statusText)
-                .font(.headline)
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 8)
-                .background(.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
-                .accessibilityLabel("Status")
-                .accessibilityValue(coordinator.statusText)
+                .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 10))
 
             if let turnHintText = coordinator.turnHintText {
                 Text(turnHintText)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.footnote.weight(.bold))
                     .foregroundStyle(.white.opacity(0.95))
                     .padding(.horizontal, 10)
-                    .padding(.vertical, 8)
-                    .background(.white.opacity(0.16), in: RoundedRectangle(cornerRadius: 12))
-                    .accessibilityLabel("Turn")
-                    .accessibilityValue(turnHintText)
+                    .padding(.vertical, 6)
+                    .background(.white.opacity(0.18), in: RoundedRectangle(cornerRadius: 10))
             }
 
             if let errorText = coordinator.errorText {
                 Text(errorText)
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(.red.opacity(0.95))
-                    .accessibilityLabel("Error")
-                    .accessibilityValue(errorText)
-            }
-        }
-    }
-
-    private var lobby: some View {
-        ScrollView {
-            VStack(spacing: 10) {
-                if let lastPlayed = coordinator.lastPlayedGame {
-                    Button {
-                        coordinator.startLastPlayedGame()
-                    } label: {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Resume Last")
-                                    .font(.caption.weight(.bold))
-                                    .foregroundStyle(.white.opacity(0.82))
-                                Text(lastPlayed.title)
-                                    .font(.title3.weight(.heavy))
-                                    .foregroundStyle(.white)
-                            }
-                            Spacer()
-                            Image(systemName: "play.fill")
-                                .foregroundStyle(.white)
-                        }
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(.white.opacity(0.18), in: RoundedRectangle(cornerRadius: 16))
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Resume last game, \(lastPlayed.title)")
-                }
-
-                Text("Choose a game, send it to chat, and take turns by opening the latest message.")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.white.opacity(0.88))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(10)
-                    .background(.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
-
-                ForEach(ArcadeGame.allCases) { game in
-                    Button {
-                        coordinator.startGame(game)
-                    } label: {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(game.title)
-                                    .font(.title3.weight(.heavy))
-                                    .foregroundStyle(.white)
-                                Text(game.subtitle)
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundStyle(.white.opacity(0.86))
-                            }
-                            Spacer()
-                            Image(systemName: "paperplane.fill")
-                                .font(.title3.weight(.heavy))
-                                .foregroundStyle(.white)
-                        }
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color(hex: game.accentHex).opacity(0.9), in: RoundedRectangle(cornerRadius: 16))
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Start \(game.title)")
-                    .accessibilityHint("Sends a new round to the current chat")
-                }
             }
         }
     }
@@ -230,6 +237,28 @@ struct ArcadeRootView: View {
             .padding(10)
             .background(.white, in: RoundedRectangle(cornerRadius: 16))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    private func compactTitle(for game: ArcadeGame) -> String {
+        switch game {
+        case .ticTacToe: return "TIC TAC"
+        case .wordle: return "WORDLE"
+        case .flappyBird: return "FLAPPY"
+        case .boggle: return "BOGGLE"
+        case .connect4: return "CONNECT 4"
+        case .pictionary: return "PICTIONARY"
+        }
+    }
+
+    private func iconName(for game: ArcadeGame) -> String {
+        switch game {
+        case .ticTacToe: return "grid"
+        case .wordle: return "textformat.abc"
+        case .flappyBird: return "bird.fill"
+        case .boggle: return "character.book.closed.fill"
+        case .connect4: return "circle.grid.3x3.fill"
+        case .pictionary: return "pencil.and.scribble"
         }
     }
 

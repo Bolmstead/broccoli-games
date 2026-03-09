@@ -74,6 +74,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.broccoli.BroccoliPigeon.MessagesExtension
         GENERATE_INFOPLIST_FILE: NO
         CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
   BroccoliPigeonTests:
     type: bundle.unit-test
     platform: iOS

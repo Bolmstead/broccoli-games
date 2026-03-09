@@ -9,11 +9,20 @@ struct PictionaryGameView: View {
     let publishRound: (String, [PictionaryStroke], Int) -> Void
     let submitGuess: (String, TimeInterval) -> Void
 
+    private enum SetupStage {
+        case enterPrompt
+        case countdown
+        case drawing
+    }
+
     @State private var promptInput = ""
     @State private var guessInput = ""
     @State private var draftStrokes: [PictionaryStroke] = []
     @State private var activeStroke: [PictionaryStrokePoint] = []
     @State private var drawingAnchor: Date?
+    @State private var countdownAnchor: Date?
+    @State private var setupStage: SetupStage = .enterPrompt
+    @State private var lockedPrompt = ""
     @State private var now = Date()
     @State private var replayAnchor = Date()
     @State private var guessAnchor = Date()
@@ -31,30 +40,53 @@ struct PictionaryGameView: View {
         }
         .onReceive(timer) { _ in
             now = Date()
+            if setupStage == .countdown, countdownRemaining == 0 {
+                beginDrawingPhase()
+            }
         }
-        .onChange(of: state.publishedAt) { _ in
-            resetReplayAndGuessTimer()
+        .onChange(of: state.publishedAt) {
+            resetReplayAndGuessTimer(resetGuess: true)
         }
         .onAppear {
-            if state.phase == .setup && isDrawer, let revealedPrompt, !revealedPrompt.isEmpty {
-                promptInput = revealedPrompt
-            }
-            resetReplayAndGuessTimer()
+            configureInitialLocalState()
         }
     }
 
     private var setupView: some View {
         VStack(spacing: 10) {
+            HStack(spacing: 8) {
+                stageBadge
+                Spacer()
+                if setupStage == .drawing {
+                    Text("Recording \(formatMilliseconds(max(drawingElapsedMs, draftDurationMs)))")
+                        .font(.footnote.weight(.heavy))
+                        .foregroundStyle(Color(hex: "#065F46"))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(Color(hex: "#D1FAE5"), in: Capsule())
+                }
+            }
+
             TextField("Word or phrase to draw", text: $promptInput)
                 .textInputAutocapitalization(.never)
                 .disableAutocorrection(true)
                 .padding(.horizontal, 12)
                 .frame(minHeight: 44)
                 .background(Color(hex: "#E2E8F0"), in: RoundedRectangle(cornerRadius: 10))
+                .disabled(setupStage != .enterPrompt)
 
             drawingCanvas
 
             HStack(spacing: 8) {
+                Button(primarySetupActionTitle) {
+                    handlePrimarySetupAction()
+                }
+                .font(.subheadline.weight(.bold))
+                .frame(minWidth: 108, minHeight: 40)
+                .background(primarySetupActionColor, in: RoundedRectangle(cornerRadius: 8))
+                .foregroundStyle(.white)
+                .disabled(!canPerformPrimarySetupAction)
+
                 Button("Undo") {
                     if !activeStroke.isEmpty {
                         activeStroke = []
@@ -66,28 +98,27 @@ struct PictionaryGameView: View {
                 .frame(minWidth: 80, minHeight: 40)
                 .background(Color(hex: "#475569"), in: RoundedRectangle(cornerRadius: 8))
                 .foregroundStyle(.white)
-                .disabled(draftStrokes.isEmpty && activeStroke.isEmpty)
+                .disabled(setupStage != .drawing || (draftStrokes.isEmpty && activeStroke.isEmpty))
 
                 Button("Clear") {
                     draftStrokes = []
                     activeStroke = []
-                    drawingAnchor = nil
                 }
                 .font(.subheadline.weight(.bold))
                 .frame(minWidth: 80, minHeight: 40)
                 .background(Color(hex: "#64748B"), in: RoundedRectangle(cornerRadius: 8))
                 .foregroundStyle(.white)
-                .disabled(draftStrokes.isEmpty && activeStroke.isEmpty)
-
-                Button("Send Puzzle") {
-                    publishRound(promptInput, draftStrokes, draftDurationMs)
-                }
-                .font(.subheadline.weight(.heavy))
-                .frame(maxWidth: .infinity, minHeight: 40)
-                .background(Color(hex: "#0284C7"), in: RoundedRectangle(cornerRadius: 8))
-                .foregroundStyle(.white)
-                .disabled(!canPublish)
+                .disabled(setupStage != .drawing || (draftStrokes.isEmpty && activeStroke.isEmpty))
             }
+
+            Button("Send Puzzle") {
+                publishRound(lockedPrompt, draftStrokes, draftDurationMs)
+            }
+            .font(.subheadline.weight(.heavy))
+            .frame(maxWidth: .infinity, minHeight: 42)
+            .background(Color(hex: "#0284C7"), in: RoundedRectangle(cornerRadius: 10))
+            .foregroundStyle(.white)
+            .disabled(!canPublish)
 
             HStack {
                 Text("Strokes: \(draftStrokes.count)")
@@ -101,6 +132,8 @@ struct PictionaryGameView: View {
 
     private var guessView: some View {
         VStack(spacing: 10) {
+            timerHUD
+
             HStack {
                 Text("Hint: \(hintText)")
                 Spacer()
@@ -111,14 +144,6 @@ struct PictionaryGameView: View {
 
             replayCanvas
 
-            HStack {
-                Text("Replay: \(formatMilliseconds(replayElapsedMs)) / \(formatMilliseconds(max(state.drawingDurationMs, 1)))")
-                Spacer()
-                Text("Your Timer: \(formatSeconds(guessElapsedSeconds))")
-            }
-            .font(.footnote.weight(.semibold))
-            .foregroundStyle(.black.opacity(0.75))
-
             if !state.lastGuessPreview.isEmpty {
                 Text(state.lastGuessPreview)
                     .font(.footnote.weight(.semibold))
@@ -128,7 +153,7 @@ struct PictionaryGameView: View {
 
             HStack(spacing: 8) {
                 Button("Replay") {
-                    resetReplayAndGuessTimer()
+                    resetReplayTimer()
                 }
                 .font(.subheadline.weight(.bold))
                 .frame(minWidth: 84, minHeight: 42)
@@ -141,7 +166,6 @@ struct PictionaryGameView: View {
                     .padding(.horizontal, 10)
                     .frame(minHeight: 42)
                     .background(Color(hex: "#E2E8F0"), in: RoundedRectangle(cornerRadius: 8))
-                    .disabled(!canGuess)
 
                 Button("Guess") {
                     let text = guessInput
@@ -152,7 +176,7 @@ struct PictionaryGameView: View {
                 .frame(minWidth: 72, minHeight: 42)
                 .background(Color(hex: "#0284C7"), in: RoundedRectangle(cornerRadius: 8))
                 .foregroundStyle(.white)
-                .disabled(!canGuess || normalizePictionaryGuess(guessInput).isEmpty)
+                .disabled(!canSubmitGuess || normalizePictionaryGuess(guessInput).isEmpty)
             }
 
             if let mine = myResult {
@@ -190,6 +214,73 @@ struct PictionaryGameView: View {
         }
     }
 
+    private var timerHUD: some View {
+        VStack(spacing: 8) {
+            HStack(spacing: 8) {
+                timerCard(
+                    title: "REPLAY",
+                    value: "\(Int((replayProgress * 100).rounded()))%",
+                    subtitle: "\(formatMilliseconds(replayElapsedMs)) / \(formatMilliseconds(max(state.drawingDurationMs, 1)))",
+                    gradient: [Color(hex: "#F59E0B"), Color(hex: "#F97316")]
+                )
+
+                timerCard(
+                    title: "YOUR TIME",
+                    value: formatSeconds(guessElapsedSeconds),
+                    subtitle: canSubmitGuess ? "Running" : "Locked",
+                    gradient: [Color(hex: "#06B6D4"), Color(hex: "#2563EB")]
+                )
+            }
+
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color(hex: "#CBD5E1"))
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(LinearGradient(colors: [Color(hex: "#34D399"), Color(hex: "#059669")], startPoint: .leading, endPoint: .trailing))
+                        .frame(width: geometry.size.width * replayProgress)
+                }
+            }
+            .frame(height: 10)
+        }
+    }
+
+    private func timerCard(title: String, value: String, subtitle: String, gradient: [Color]) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.caption.weight(.black))
+                .foregroundStyle(.white.opacity(0.85))
+            Text(value)
+                .font(.system(size: 20, weight: .black, design: .rounded))
+                .foregroundStyle(.white)
+            Text(subtitle)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.white.opacity(0.92))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(LinearGradient(colors: gradient, startPoint: .topLeading, endPoint: .bottomTrailing), in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var stageBadge: some View {
+        Group {
+            switch setupStage {
+            case .enterPrompt:
+                Text("1) Enter word, then lock it")
+            case .countdown:
+                Text("Get ready... \(countdownRemaining)")
+            case .drawing:
+                Text("Draw now")
+            }
+        }
+        .font(.footnote.weight(.heavy))
+        .foregroundStyle(.white)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color(hex: "#0F766E"), in: Capsule())
+    }
+
     private var drawingCanvas: some View {
         GeometryReader { geometry in
             Canvas { context, size in
@@ -204,7 +295,17 @@ struct PictionaryGameView: View {
             }
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.black.opacity(0.12), lineWidth: 1))
+            .overlay {
+                if setupStage != .drawing {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.black.opacity(0.18))
+                    Text(setupStage == .countdown ? "Starts in \(countdownRemaining)..." : "Lock the word to begin")
+                        .font(.title3.weight(.black))
+                        .foregroundStyle(.white)
+                }
+            }
             .contentShape(Rectangle())
+            .allowsHitTesting(setupStage == .drawing)
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
@@ -233,7 +334,60 @@ struct PictionaryGameView: View {
     }
 
     private var canPublish: Bool {
-        normalizePictionaryGuess(promptInput).count >= 2 && !draftStrokes.isEmpty
+        setupStage == .drawing && !lockedPrompt.isEmpty && !draftStrokes.isEmpty
+    }
+
+    private var canSubmitGuess: Bool {
+        !isDrawer && myResult == nil
+    }
+
+    private var replayProgress: Double {
+        let total = Double(max(state.drawingDurationMs, 1))
+        return min(max(Double(replayElapsedMs) / total, 0), 1)
+    }
+
+    private var primarySetupActionTitle: String {
+        switch setupStage {
+        case .enterPrompt:
+            return "Lock Word"
+        case .countdown:
+            return "Get Ready"
+        case .drawing:
+            return "Change Word"
+        }
+    }
+
+    private var primarySetupActionColor: Color {
+        switch setupStage {
+        case .enterPrompt:
+            return Color(hex: "#0F766E")
+        case .countdown:
+            return Color(hex: "#64748B")
+        case .drawing:
+            return Color(hex: "#7C3AED")
+        }
+    }
+
+    private var canPerformPrimarySetupAction: Bool {
+        switch setupStage {
+        case .enterPrompt:
+            return normalizePictionaryGuess(promptInput).count >= 2
+        case .countdown:
+            return false
+        case .drawing:
+            return true
+        }
+    }
+
+    private var countdownRemaining: Int {
+        guard setupStage == .countdown, let countdownAnchor else { return 0 }
+        let elapsed = Int(now.timeIntervalSince(countdownAnchor))
+        return max(3 - elapsed, 0)
+    }
+
+    private var drawingElapsedMs: Int {
+        guard let drawingAnchor else { return 0 }
+        return max(Int((now.timeIntervalSince(drawingAnchor) * 1000).rounded()), 0)
     }
 
     private var draftDurationMs: Int {
@@ -253,10 +407,6 @@ struct PictionaryGameView: View {
         state.correctResults.first { $0.playerID == localPlayerID }
     }
 
-    private var canGuess: Bool {
-        !isDrawer && myResult == nil
-    }
-
     private var hintText: String {
         if state.promptLength <= 0 {
             return "No hint"
@@ -267,16 +417,56 @@ struct PictionaryGameView: View {
         return "\(state.promptLength) letters, starts with \(state.promptFirstLetter)"
     }
 
+    private func handlePrimarySetupAction() {
+        switch setupStage {
+        case .enterPrompt:
+            startCountdownIfPromptValid()
+        case .countdown:
+            break
+        case .drawing:
+            resetSetupToPromptEntry()
+        }
+    }
+
+    private func startCountdownIfPromptValid() {
+        let normalizedPrompt = normalizePictionaryGuess(promptInput)
+        guard normalizedPrompt.count >= 2 else { return }
+
+        lockedPrompt = normalizedPrompt
+        promptInput = normalizedPrompt
+        draftStrokes = []
+        activeStroke = []
+        drawingAnchor = nil
+        countdownAnchor = Date()
+        setupStage = .countdown
+    }
+
+    private func beginDrawingPhase() {
+        guard setupStage == .countdown else { return }
+        setupStage = .drawing
+        drawingAnchor = Date()
+    }
+
+    private func resetSetupToPromptEntry() {
+        setupStage = .enterPrompt
+        lockedPrompt = ""
+        countdownAnchor = nil
+        drawingAnchor = nil
+        draftStrokes = []
+        activeStroke = []
+    }
+
     private func appendPoint(location: CGPoint, in size: CGSize) {
+        guard setupStage == .drawing else { return }
         guard size.width > 0, size.height > 0 else { return }
 
-        let now = Date()
+        let current = Date()
         if drawingAnchor == nil {
-            drawingAnchor = now
+            drawingAnchor = current
         }
         guard let drawingAnchor else { return }
 
-        let elapsedMs = max(Int((now.timeIntervalSince(drawingAnchor) * 1000).rounded()), 0)
+        let elapsedMs = max(Int((current.timeIntervalSince(drawingAnchor) * 1000).rounded()), 0)
         let point = PictionaryStrokePoint(
             x: Int((max(0, min(location.x, size.width)) / size.width * pointScale).rounded()),
             y: Int((max(0, min(location.y, size.height)) / size.height * pointScale).rounded()),
@@ -297,6 +487,7 @@ struct PictionaryGameView: View {
     }
 
     private func finishStroke() {
+        guard setupStage == .drawing else { return }
         guard !activeStroke.isEmpty else { return }
         draftStrokes.append(PictionaryStroke(points: activeStroke))
         activeStroke = []
@@ -341,10 +532,31 @@ struct PictionaryGameView: View {
         )
     }
 
-    private func resetReplayAndGuessTimer() {
-        let now = Date()
-        replayAnchor = now
-        guessAnchor = now
+    private func configureInitialLocalState() {
+        if state.phase == .setup && isDrawer {
+            if let revealedPrompt, !revealedPrompt.isEmpty {
+                promptInput = revealedPrompt
+            }
+            setupStage = .enterPrompt
+            lockedPrompt = ""
+            countdownAnchor = nil
+            drawingAnchor = nil
+            draftStrokes = []
+            activeStroke = []
+        }
+        resetReplayAndGuessTimer(resetGuess: true)
+    }
+
+    private func resetReplayTimer() {
+        replayAnchor = Date()
+    }
+
+    private func resetReplayAndGuessTimer(resetGuess: Bool) {
+        let current = Date()
+        replayAnchor = current
+        if resetGuess {
+            guessAnchor = current
+        }
     }
 
     private func formatMilliseconds(_ ms: Int) -> String {

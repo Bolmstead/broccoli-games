@@ -22,13 +22,6 @@ final class MessagesViewController: MSMessagesAppViewController {
         coordinator.ingest(message: message)
     }
 
-    override func didTransition(to presentationStyle: MSMessagesAppPresentationStyle) {
-        super.didTransition(to: presentationStyle)
-        if presentationStyle == .compact {
-            requestPresentationStyle(.expanded)
-        }
-    }
-
     private func embedRootView() {
         let root = ArcadeRootView(coordinator: coordinator)
         let hosting = UIHostingController(rootView: root)
