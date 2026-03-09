@@ -2,6 +2,7 @@ import SwiftUI
 
 struct Connect4GameView: View {
     let state: Connect4State
+    let isLocalTurn: Bool
     let drop: (Int) -> Void
 
     var body: some View {
@@ -21,7 +22,7 @@ struct Connect4GameView: View {
                     .frame(width: 42, height: 44)
                     .background(Color(hex: "#1D4ED8"), in: RoundedRectangle(cornerRadius: 6))
                     .foregroundStyle(.white)
-                    .disabled(state.winner != nil || state.isDraw || topCellFilled(column))
+                    .disabled(state.winner != nil || state.isDraw || topCellFilled(column) || !isLocalTurn)
                     .accessibilityLabel("Drop in column \(column + 1)")
                 }
             }

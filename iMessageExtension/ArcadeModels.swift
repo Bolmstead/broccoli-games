@@ -6,9 +6,16 @@ enum ArcadeGame: String, CaseIterable, Codable, Identifiable {
     case flappyBird
     case boggle
     case connect4
+    case yahtzee
     case pictionary
 
     var id: String { rawValue }
+
+    static let playableOptions: [ArcadeGame] = [
+        .flappyBird,
+        .yahtzee,
+        .pictionary
+    ]
 
     var title: String {
         switch self {
@@ -17,6 +24,7 @@ enum ArcadeGame: String, CaseIterable, Codable, Identifiable {
         case .flappyBird: return "Flappy Bird"
         case .boggle: return "Boggle"
         case .connect4: return "Connect 4"
+        case .yahtzee: return "Yahtzee"
         case .pictionary: return "Pictionary"
         }
     }
@@ -28,6 +36,7 @@ enum ArcadeGame: String, CaseIterable, Codable, Identifiable {
         case .flappyBird: return "Tap to survive"
         case .boggle: return "Find words fast"
         case .connect4: return "Connect four chips"
+        case .yahtzee: return "Roll and score combos"
         case .pictionary: return "Draw, replay, and guess"
         }
     }
@@ -39,13 +48,14 @@ enum ArcadeGame: String, CaseIterable, Codable, Identifiable {
         case .flappyBird: return "#38BDF8"
         case .boggle: return "#8B5CF6"
         case .connect4: return "#EF4444"
+        case .yahtzee: return "#F59E0B"
         case .pictionary: return "#0EA5E9"
         }
     }
 }
 
 struct ArcadeEnvelope: Codable {
-    static let currentSchemaVersion = 3
+    static let currentSchemaVersion = 4
 
     var schemaVersion: Int
     var game: ArcadeGame
@@ -57,6 +67,7 @@ struct ArcadeEnvelope: Codable {
     var flappyBird: FlappyBirdState?
     var boggle: BoggleState?
     var connect4: Connect4State?
+    var yahtzee: YahtzeeState?
     var pictionary: PictionaryState?
 
     enum CodingKeys: String, CodingKey {
@@ -70,6 +81,7 @@ struct ArcadeEnvelope: Codable {
         case flappyBird
         case boggle
         case connect4
+        case yahtzee
         case pictionary
     }
 
@@ -84,6 +96,7 @@ struct ArcadeEnvelope: Codable {
         flappyBird: FlappyBirdState?,
         boggle: BoggleState?,
         connect4: Connect4State?,
+        yahtzee: YahtzeeState?,
         pictionary: PictionaryState?
     ) {
         self.schemaVersion = schemaVersion
@@ -96,6 +109,7 @@ struct ArcadeEnvelope: Codable {
         self.flappyBird = flappyBird
         self.boggle = boggle
         self.connect4 = connect4
+        self.yahtzee = yahtzee
         self.pictionary = pictionary
     }
 
@@ -111,6 +125,7 @@ struct ArcadeEnvelope: Codable {
         flappyBird = try container.decodeIfPresent(FlappyBirdState.self, forKey: .flappyBird)
         boggle = try container.decodeIfPresent(BoggleState.self, forKey: .boggle)
         connect4 = try container.decodeIfPresent(Connect4State.self, forKey: .connect4)
+        yahtzee = try container.decodeIfPresent(YahtzeeState.self, forKey: .yahtzee)
         pictionary = try container.decodeIfPresent(PictionaryState.self, forKey: .pictionary)
     }
 
@@ -126,6 +141,7 @@ struct ArcadeEnvelope: Codable {
             flappyBird: nil,
             boggle: nil,
             connect4: nil,
+            yahtzee: nil,
             pictionary: nil
         )
 
@@ -140,6 +156,8 @@ struct ArcadeEnvelope: Codable {
             envelope.boggle = BoggleState.newRound()
         case .connect4:
             envelope.connect4 = Connect4State.newRound()
+        case .yahtzee:
+            envelope.yahtzee = YahtzeeState.newRound()
         case .pictionary:
             envelope.pictionary = PictionaryState.newRound()
         }
@@ -159,6 +177,7 @@ struct ArcadeEnvelope: Codable {
         try container.encodeIfPresent(flappyBird, forKey: .flappyBird)
         try container.encodeIfPresent(boggle, forKey: .boggle)
         try container.encodeIfPresent(connect4, forKey: .connect4)
+        try container.encodeIfPresent(yahtzee, forKey: .yahtzee)
         try container.encodeIfPresent(pictionary, forKey: .pictionary)
     }
 }
@@ -166,11 +185,20 @@ struct ArcadeEnvelope: Codable {
 struct TicTacToeState: Codable {
     var board: [Int]
     var currentPlayer: Int
+    var playerOneID: String?
+    var playerTwoID: String?
     var winner: Int?
     var isDraw: Bool
 
     static func newRound() -> TicTacToeState {
-        TicTacToeState(board: Array(repeating: 0, count: 9), currentPlayer: 1, winner: nil, isDraw: false)
+        TicTacToeState(
+            board: Array(repeating: 0, count: 9),
+            currentPlayer: 1,
+            playerOneID: nil,
+            playerTwoID: nil,
+            winner: nil,
+            isDraw: false
+        )
     }
 }
 
@@ -223,11 +251,86 @@ struct BoggleState: Codable {
 struct Connect4State: Codable {
     var board: [Int]
     var currentPlayer: Int
+    var playerOneID: String?
+    var playerTwoID: String?
     var winner: Int?
     var isDraw: Bool
 
     static func newRound() -> Connect4State {
-        Connect4State(board: Array(repeating: 0, count: 42), currentPlayer: 1, winner: nil, isDraw: false)
+        Connect4State(
+            board: Array(repeating: 0, count: 42),
+            currentPlayer: 1,
+            playerOneID: nil,
+            playerTwoID: nil,
+            winner: nil,
+            isDraw: false
+        )
+    }
+}
+
+enum YahtzeeCategory: String, CaseIterable, Codable, Identifiable {
+    case ones
+    case twos
+    case threes
+    case fours
+    case fives
+    case sixes
+    case threeOfKind
+    case fourOfKind
+    case fullHouse
+    case smallStraight
+    case largeStraight
+    case yahtzee
+    case chance
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .ones: return "Ones"
+        case .twos: return "Twos"
+        case .threes: return "Threes"
+        case .fours: return "Fours"
+        case .fives: return "Fives"
+        case .sixes: return "Sixes"
+        case .threeOfKind: return "3 of a Kind"
+        case .fourOfKind: return "4 of a Kind"
+        case .fullHouse: return "Full House"
+        case .smallStraight: return "Small Straight"
+        case .largeStraight: return "Large Straight"
+        case .yahtzee: return "Yahtzee"
+        case .chance: return "Chance"
+        }
+    }
+}
+
+struct YahtzeeState: Codable {
+    var dice: [Int]
+    var held: [Bool]
+    var rollsRemaining: Int
+    var currentPlayer: Int
+    var playerOneID: String?
+    var playerTwoID: String?
+    var round: Int
+    var playerOneScores: [String: Int]
+    var playerTwoScores: [String: Int]
+    var isOver: Bool
+    var winner: Int?
+
+    static func newRound() -> YahtzeeState {
+        YahtzeeState(
+            dice: Array(repeating: 1, count: 5),
+            held: Array(repeating: false, count: 5),
+            rollsRemaining: 3,
+            currentPlayer: 1,
+            playerOneID: nil,
+            playerTwoID: nil,
+            round: 1,
+            playerOneScores: [:],
+            playerTwoScores: [:],
+            isOver: false,
+            winner: nil
+        )
     }
 }
 

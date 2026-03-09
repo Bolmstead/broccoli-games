@@ -25,6 +25,7 @@ targets:
         CFBundleDisplayName: Broccoli Pigeon
         UILaunchScreen: {}
         UIApplicationSupportsIndirectInputEvents: true
+        LSApplicationLaunchProhibited: true
         UIRequiresFullScreen: true
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
@@ -83,6 +84,7 @@ targets:
     sources:
       - path: BroccoliPigeonTests
       - path: iMessageExtension/ArcadeGameLogic.swift
+      - path: iMessageExtension/ArcadeModels.swift
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.broccoli.BroccoliPigeonTests

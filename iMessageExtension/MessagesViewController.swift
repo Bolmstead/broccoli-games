@@ -1,13 +1,16 @@
+import Combine
 import Messages
 import SwiftUI
 
 final class MessagesViewController: MSMessagesAppViewController {
     private let coordinator = MessagesCoordinator()
     private var hostingController: UIHostingController<ArcadeRootView>?
+    private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         embedRootView()
+        bindPresentationBehavior()
     }
 
     override func willBecomeActive(with conversation: MSConversation) {
@@ -20,6 +23,19 @@ final class MessagesViewController: MSMessagesAppViewController {
         super.didSelect(message, conversation: conversation)
         coordinator.setConversation(conversation)
         coordinator.ingest(message: message)
+    }
+
+    private func bindPresentationBehavior() {
+        coordinator.$envelope
+            .receive(on: RunLoop.main)
+            .sink { [weak self] envelope in
+                guard let self else { return }
+                guard envelope != nil else { return }
+                if self.presentationStyle == .compact {
+                    self.requestPresentationStyle(.expanded)
+                }
+            }
+            .store(in: &cancellables)
     }
 
     private func embedRootView() {

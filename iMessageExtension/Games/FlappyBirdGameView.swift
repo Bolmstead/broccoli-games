@@ -14,6 +14,13 @@ struct FlappyBirdGameView: View {
     @State private var frameCount = 0
     @State private var scoreSent = false
 
+    private let gameHeight: CGFloat = 420
+    private let floorHeight: CGFloat = 32
+    private let pipeWidth: CGFloat = 46
+    private let birdSize: CGFloat = 22
+    private let birdX: CGFloat = 62
+    private let halfGap: CGFloat = 54
+
     private let timer = Timer.publish(every: 1.0 / 60.0, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -28,8 +35,6 @@ struct FlappyBirdGameView: View {
             .accessibilityLabel("Run \(score), best \(bestScore)")
 
             Canvas { context, size in
-                let floorHeight: CGFloat = 32
-
                 let skyRect = CGRect(origin: .zero, size: size)
                 context.fill(Path(skyRect), with: .linearGradient(
                     Gradient(colors: [Color(hex: "#8BE9FF"), Color(hex: "#E0F2FE")]),
@@ -41,19 +46,19 @@ struct FlappyBirdGameView: View {
                 context.fill(Path(floor), with: .color(Color(hex: "#84CC16")))
 
                 for pipe in pipes {
-                    let topPipe = CGRect(x: pipe.x, y: 0, width: 46, height: pipe.gapY - 54)
+                    let topPipe = CGRect(x: pipe.x, y: 0, width: pipeWidth, height: pipe.gapY - halfGap)
                     let bottomPipe = CGRect(
                         x: pipe.x,
-                        y: pipe.gapY + 54,
-                        width: 46,
-                        height: size.height - floorHeight - (pipe.gapY + 54)
+                        y: pipe.gapY + halfGap,
+                        width: pipeWidth,
+                        height: size.height - floorHeight - (pipe.gapY + halfGap)
                     )
 
                     context.fill(Path(topPipe), with: .color(Color(hex: "#16A34A")))
                     context.fill(Path(bottomPipe), with: .color(Color(hex: "#16A34A")))
                 }
 
-                let birdRect = CGRect(x: 62, y: birdY, width: 22, height: 22)
+                let birdRect = CGRect(x: birdX, y: birdY, width: birdSize, height: birdSize)
                 context.fill(Path(ellipseIn: birdRect), with: .color(Color(hex: "#FACC15")))
                 context.stroke(Path(ellipseIn: birdRect), with: .color(.black.opacity(0.5)), lineWidth: 1)
 
@@ -64,7 +69,7 @@ struct FlappyBirdGameView: View {
                     drawOverlay(context: context, size: size, text: "Game Over")
                 }
             }
-            .frame(height: 260)
+            .frame(height: gameHeight)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.black.opacity(0.12), lineWidth: 1))
             .contentShape(Rectangle())
@@ -107,7 +112,7 @@ struct FlappyBirdGameView: View {
     }
 
     private func resetRun() {
-        birdY = 170
+        birdY = gameHeight * 0.52
         birdVelocity = 0
         pipes = []
         score = 0
@@ -126,7 +131,9 @@ struct FlappyBirdGameView: View {
         birdY += birdVelocity
 
         if frameCount % 88 == 0 {
-            let gapY = CGFloat(Int.random(in: 84...170))
+            let minGapY = Int(halfGap + 36)
+            let maxGapY = Int((gameHeight - floorHeight) - (halfGap + 36))
+            let gapY = CGFloat(Int.random(in: minGapY...maxGapY))
             pipes.append(Pipe(x: 320, gapY: gapY, counted: false))
         }
 
@@ -137,14 +144,14 @@ struct FlappyBirdGameView: View {
         pipes.removeAll { $0.x < -52 }
 
         for idx in pipes.indices {
-            if !pipes[idx].counted && pipes[idx].x + 46 < 62 {
+            if !pipes[idx].counted && pipes[idx].x + pipeWidth < birdX {
                 pipes[idx].counted = true
                 score += 1
             }
         }
 
-        let birdRect = CGRect(x: 62, y: birdY, width: 22, height: 22)
-        let floorY: CGFloat = 228
+        let birdRect = CGRect(x: birdX, y: birdY, width: birdSize, height: birdSize)
+        let floorY: CGFloat = gameHeight - floorHeight
 
         if birdRect.minY <= 0 || birdRect.maxY >= floorY {
             endRun()
@@ -152,8 +159,8 @@ struct FlappyBirdGameView: View {
         }
 
         for pipe in pipes {
-            let topPipe = CGRect(x: pipe.x, y: 0, width: 46, height: pipe.gapY - 54)
-            let bottomPipe = CGRect(x: pipe.x, y: pipe.gapY + 54, width: 46, height: floorY - (pipe.gapY + 54))
+            let topPipe = CGRect(x: pipe.x, y: 0, width: pipeWidth, height: pipe.gapY - halfGap)
+            let bottomPipe = CGRect(x: pipe.x, y: pipe.gapY + halfGap, width: pipeWidth, height: floorY - (pipe.gapY + halfGap))
             if birdRect.intersects(topPipe) || birdRect.intersects(bottomPipe) {
                 endRun()
                 return

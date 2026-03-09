@@ -71,4 +71,20 @@ final class ArcadeGameLogicTests: XCTestCase {
         let second = pictionaryPromptHash(prompt: "  new   york ", salt: salt)
         XCTAssertEqual(first, second)
     }
+
+    func testYahtzeeScoresUpperSection() {
+        let dice = [1, 1, 3, 6, 6]
+        XCTAssertEqual(scoreYahtzee(category: .ones, dice: dice), 2)
+        XCTAssertEqual(scoreYahtzee(category: .sixes, dice: dice), 12)
+    }
+
+    func testYahtzeeComboScoring() {
+        XCTAssertEqual(scoreYahtzee(category: .threeOfKind, dice: [2, 2, 2, 5, 6]), 17)
+        XCTAssertEqual(scoreYahtzee(category: .fourOfKind, dice: [2, 2, 2, 5, 6]), 0)
+        XCTAssertEqual(scoreYahtzee(category: .fullHouse, dice: [3, 3, 2, 2, 2]), 25)
+        XCTAssertEqual(scoreYahtzee(category: .smallStraight, dice: [1, 2, 3, 4, 6]), 30)
+        XCTAssertEqual(scoreYahtzee(category: .largeStraight, dice: [2, 3, 4, 5, 6]), 40)
+        XCTAssertEqual(scoreYahtzee(category: .yahtzee, dice: [4, 4, 4, 4, 4]), 50)
+        XCTAssertEqual(scoreYahtzee(category: .chance, dice: [4, 4, 4, 4, 4]), 20)
+    }
 }

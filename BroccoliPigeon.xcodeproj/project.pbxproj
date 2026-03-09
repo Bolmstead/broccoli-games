@@ -14,12 +14,14 @@
 		249D6A0DD13B038354D331F7 /* BroccoliGamesMessagesExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 49CDD7502624B483137D1AB4 /* BroccoliGamesMessagesExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		27AC3710E58FE71714197E75 /* ArcadeGameLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A448019E626A5FB00F205E9E /* ArcadeGameLogicTests.swift */; };
 		336AD90B7FEA277051726C7F /* MessagesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E05095BA06C26BE82DFF559 /* MessagesCoordinator.swift */; };
+		4589FAC97B76051D2AA4B0B2 /* ArcadeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A387633098E2856921192D82 /* ArcadeModels.swift */; };
 		4B527C9A9C01DBF6E5FB3A8D /* app_icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9ADD24E017069AEC261F7940 /* app_icon.jpg */; };
 		523ADE7C0378F650A4A6B41E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EDA6A09D342EE26F002AEBB4 /* Assets.xcassets */; };
 		56B56F6CA73814459ECF4F43 /* BoggleGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB477FA5B4361EECF2D0CDDD /* BoggleGameView.swift */; };
 		8AACCCFF3D5A17B0764DDEFA /* FlappyBirdGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2AA5FF78E9272C1961F9805 /* FlappyBirdGameView.swift */; };
 		8CA34C98CC7919E7C874A85D /* WordleGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DF1454A91C65851DEDF33E /* WordleGameView.swift */; };
 		9A8411DEF8B32D8670D1CF73 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2383B44D5D289FB4A192CA0F /* ContentView.swift */; };
+		9E1D3D2001364B6DC93C8BBD /* YahtzeeGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2273203D2F2470B41BF56EA3 /* YahtzeeGameView.swift */; };
 		C611B1C71084630B3BF69703 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95ACD3ACD2518D21D2AD4CEE /* Color+Hex.swift */; };
 		E581941E269F0866FBB10A47 /* TicTacToeGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE469B6D6341AA78575193B /* TicTacToeGameView.swift */; };
 		EB74A3625BC5A2BB5454A57E /* ArcadeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A387633098E2856921192D82 /* ArcadeModels.swift */; };
@@ -57,6 +59,7 @@
 		07DF1454A91C65851DEDF33E /* WordleGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordleGameView.swift; sourceTree = "<group>"; };
 		0E05095BA06C26BE82DFF559 /* MessagesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesCoordinator.swift; sourceTree = "<group>"; };
 		0EE469B6D6341AA78575193B /* TicTacToeGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicTacToeGameView.swift; sourceTree = "<group>"; };
+		2273203D2F2470B41BF56EA3 /* YahtzeeGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YahtzeeGameView.swift; sourceTree = "<group>"; };
 		2383B44D5D289FB4A192CA0F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		25BB97C08FD6249EEFA59A14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		267B1E41CF84512A907D6BD0 /* BroccoliPigeon.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BroccoliPigeon.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,6 +92,7 @@
 				E28E7D7E2AB5FD15CA4DC7C7 /* PictionaryGameView.swift */,
 				0EE469B6D6341AA78575193B /* TicTacToeGameView.swift */,
 				07DF1454A91C65851DEDF33E /* WordleGameView.swift */,
+				2273203D2F2470B41BF56EA3 /* YahtzeeGameView.swift */,
 			);
 			path = Games;
 			sourceTree = "<group>";
@@ -300,6 +304,7 @@
 			files = (
 				F93AC018D6127327D8C5BB42 /* ArcadeGameLogic.swift in Sources */,
 				27AC3710E58FE71714197E75 /* ArcadeGameLogicTests.swift in Sources */,
+				4589FAC97B76051D2AA4B0B2 /* ArcadeModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,6 +324,7 @@
 				EDB4063F062C477F82263171 /* PictionaryGameView.swift in Sources */,
 				E581941E269F0866FBB10A47 /* TicTacToeGameView.swift in Sources */,
 				8CA34C98CC7919E7C874A85D /* WordleGameView.swift in Sources */,
+				9E1D3D2001364B6DC93C8BBD /* YahtzeeGameView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

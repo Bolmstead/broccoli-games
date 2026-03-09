@@ -164,6 +164,64 @@ func canTraceBoggleWord(_ word: String, board: [String]) -> Bool {
     return false
 }
 
+func rollYahtzeeDice(dice: [Int], held: [Bool]) -> [Int] {
+    guard dice.count == 5, held.count == 5 else {
+        return (0..<5).map { _ in Int.random(in: 1...6) }
+    }
+
+    var next = dice
+    for index in 0..<5 where !held[index] {
+        next[index] = Int.random(in: 1...6)
+    }
+    return next
+}
+
+func scoreYahtzee(category: YahtzeeCategory, dice: [Int]) -> Int {
+    guard dice.count == 5, dice.allSatisfy({ (1...6).contains($0) }) else {
+        return 0
+    }
+
+    let counts = Dictionary(grouping: dice, by: { $0 }).mapValues(\.count)
+    let total = dice.reduce(0, +)
+    let unique = Set(dice)
+
+    func count(_ face: Int) -> Int {
+        counts[face, default: 0]
+    }
+
+    switch category {
+    case .ones: return count(1) * 1
+    case .twos: return count(2) * 2
+    case .threes: return count(3) * 3
+    case .fours: return count(4) * 4
+    case .fives: return count(5) * 5
+    case .sixes: return count(6) * 6
+    case .threeOfKind:
+        return counts.values.contains(where: { $0 >= 3 }) ? total : 0
+    case .fourOfKind:
+        return counts.values.contains(where: { $0 >= 4 }) ? total : 0
+    case .fullHouse:
+        return counts.values.sorted() == [2, 3] ? 25 : 0
+    case .smallStraight:
+        let sets: [Set<Int>] = [
+            [1, 2, 3, 4],
+            [2, 3, 4, 5],
+            [3, 4, 5, 6]
+        ]
+        return sets.contains(where: { $0.isSubset(of: unique) }) ? 30 : 0
+    case .largeStraight:
+        return unique == Set([1, 2, 3, 4, 5]) || unique == Set([2, 3, 4, 5, 6]) ? 40 : 0
+    case .yahtzee:
+        return counts.values.contains(5) ? 50 : 0
+    case .chance:
+        return total
+    }
+}
+
+func totalYahtzeeScore(_ scores: [String: Int]) -> Int {
+    scores.values.reduce(0, +)
+}
+
 func normalizePictionaryGuess(_ raw: String) -> String {
     let trimmed = raw
         .trimmingCharacters(in: .whitespacesAndNewlines)

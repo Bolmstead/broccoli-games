@@ -8,6 +8,7 @@ This repo now contains a native iOS iMessage extension game app (Game Pigeon-sty
 - Boggle
 - Connect 4
 - Pictionary
+- Yahtzee
 
 ## Project layout
 

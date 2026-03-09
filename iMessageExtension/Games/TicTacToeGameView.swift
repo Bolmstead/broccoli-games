@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TicTacToeGameView: View {
     let state: TicTacToeState
+    let isLocalTurn: Bool
     let tap: (Int) -> Void
 
     var body: some View {
@@ -27,7 +28,7 @@ struct TicTacToeGameView: View {
                         }
                     }
                     .buttonStyle(.plain)
-                    .disabled(state.board[index] != 0 || state.winner != nil || state.isDraw)
+                    .disabled(state.board[index] != 0 || state.winner != nil || state.isDraw || !isLocalTurn)
                     .accessibilityLabel(cellLabel(for: index))
                     .accessibilityHint("Double tap to place your mark")
                 }
